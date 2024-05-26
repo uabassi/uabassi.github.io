@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Desktop Theme</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'VT323', monospace;
+            background: #008080; /* Retro blue background */
+            color: #000; /* White text for retro feel */
+            font-size: 20px; /* Smaller font size for retro effect */
+            overflow: hidden; /* No scroll */
+        }
+
+        /* General window styles */
+        .window {
+            background: #FFFFFF; /* Default background */
+            border: 3px solid #808080; /* Darker gray border as seen in image */
+            padding: 8px;
+            width: 700px; /* Adjust width to better fit content */
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            cursor: grab;
+            z-index: 1; /* Ensure proper layering */
+            top: 100px; /* Start somewhat from top for clear visibility */
+            left: 100px; /* Center alignment */
+            overflow: hidden; /* Hide overflow */
+        }
+
+        /* Mimic classic window title bar */
+        .title-bar {
+            background: #c0c0c0; /* Light grey background */
+            color: black; /* Text color for title bar */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 5px 10px; /* Slightly larger padding */
+            font-weight: bold; /* Bold text for emphasis */
+        }
+
+        .title-bar.active {
+            background: #0000FF; /* Blue background for active title bar */
+            color: white; /* White text for better contrast */
+        }
+
+
+        .window-menu {
+            display: inline-block; /* Align menu items inline */
+            margin-right: auto; /* Push other elements to the right */
+        }
+
+        .window-menu span {
+            cursor: default; /* Non-clickable appearance */
+            margin-right: 10px; /* Space between menu items */
+            user-select: none; /* Prevent text selection */
+        }
+
+        /* Content styling inside window */
+        .content {
+            color: #000; /* Black text for readability */
+            font-size: 16px; /* Larger font size for better readability */
+            line-height: 1.5; /* More space between lines */
+            overflow-y: auto; /* Enable scrolling inside content */
+            max-height: 300px; /* Limit height to enforce scrolling */
+        }
+
+        /* Button to close window */
+        .close-btn {
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: black; /* Visible against title bar */
+            font-weight: bold; /* Bold for visibility */
+        }
+
+        /* Scrollbar adjustments for content area */
+        .content::-webkit-scrollbar {
+            width: 12px; /* Width of scrollbar */
+        }
+
+        .content::-webkit-scrollbar-track {
+            background: #f1f1f1; /* Light grey track */
+        }
+
+        .content::-webkit-scrollbar-thumb {
+            background: #888; /* Dark grey thumb */
+        }
+
+        .content::-webkit-scrollbar-thumb:hover {
+            background: #555; /* Darker grey on hover */
+        }
+
+
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 35px; /* Adjust height as needed */
+            background: #c1c1c1; /* Typically dark background for a taskbar */
+            color: white;
+            display: flex;
+            align-items: center;
+            padding-left: 03px; /* Adjust this to move icons to the left */
+            padding-right: 10px;
+            box-sizing: border-box;
+        }
+
+        .start-button img, .task-icons img {
+            height: 30px; /* Ensures icons are not too large */
+            cursor: pointer;
+            margin-right: 0px;
+        }
+
+        .task-icons {
+            display: flex;
+            align-items: center;
+        }
+
+        .task {
+            cursor: pointer;
+        }
+
+        #sidebar-icons {
+            position: fixed; /* Fixed position to always be visible */
+            top: 5px; /* Starting 20px from the top */
+            left: 5px; /* Starting 20px from the left edge */
+            display: flex;
+            flex-direction: column; /* Stack the icons vertically */
+            gap: 0px; /* Space between icons */
+        }
+
+        #sidebar-icons img {
+            display: block; /* Ensure each icon is on a new line */
+            width: 85px; /* Reduced width for all icons */
+            height: 85px; /* Reduced height for all icons */
+            cursor: pointer; /* Cursor pointer to indicate clickable */
+            transition: transform 0.3s; /* Smooth transition for visual feedback */
+        }
+
+        #sidebar-icons img:hover {
+            transform: scale(1.1); /* Slightly enlarge icons on hover for better interaction feedback */
+        }
+
+        .task-icons img {
+            height: 30px; /* Ensures icons are not too large */
+            cursor: pointer;
+            margin-right: 0px; /* Space between icons */
+            transition: transform 0.1s ease; /* Smooth transition for feedback */
+        }
+
+        .task-icons img.active {
+            transform: translateY(2px); /* Keeps the icon "depressed" */
+        }
+
+    </style>
+
+
+</head>
+<body>
+    <div id="desktop">
+
+        <div class="window" id="contact-window" style="top: 300px; left: 540px;">
+            <div class="title-bar">
+                <span>Contact</span>
+                <button class="close-btn" onclick="this.parentElement.parentElement.style.display='none';">x</button>
+            </div>
+            <div class="content">
+                Email me at: umayya@vt.edu
+            </div>
+        </div>
+        
+        <div class="window" id="projects-window" style="top: 350px; left: 590px;">
+            <div class="title-bar">
+                <span>Projects</span>
+                <button class="close-btn" onclick="this.parentElement.parentElement.style.display='none';">x</button>
+            </div>
+            <div class="content">
+                Check out my projects on GitHub!
+            </div>
+        </div>
+        
+        <div class="window" id="about-window" style="top: 400px; left: 640px;">
+            <div class="title-bar">
+                <span>Umayya</span>
+                <button class="close-btn" onclick="this.parentElement.parentElement.style.display='none';">x</button>
+            </div>
+            <div class="content">
+                I currently am attending Virgnia Tech, with an expected graduation date of December 2024. I decided to design my
+                personal website like this because of the memories it holds. I used to play on my grandfathers computer as a child, playing games like:
+                pinball, minesweeper, and World of Tanks! Check out my LinkedIn to learn a bit more about me.
+                <br>
+                <a href="https://www.linkedin.com/in/umayyaabassi/" target="_blank">My LinkedIn</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="taskbar">
+        <div class="task-icons">
+            <img src="start.png" alt="Start" onclick="toggleDisplay('about-window')">
+            <img src="contact.png" alt="Contact" onclick="toggleDisplay('contact-window')">
+            <img src="Projects.png" alt="Projects" onclick="toggleDisplay('projects-window')">
+        </div>
+    </div>
+
+    <div id="sidebar-icons">
+        <img src="computer.png" alt="My Computer" style="cursor: pointer;" onclick="toggleDisplay('about-window')">
+        <img src="projectsHome.png" alt="Projects" style="cursor: pointer;" onclick="toggleDisplay('projects-window')">
+        <img src="contactHome.png" alt="Contact" style="cursor: pointer;" onclick="toggleDisplay('contact-window')">
+    </div>
+    
+    
+    <script>
+        // Function to toggle display of windows
+        function toggleDisplay(id) {
+            var element = document.getElementById(id);
+            if (element.style.display === 'none') {
+                element.style.display = 'block';
+            } else {
+                element.style.display = 'none';
+            }
+        }
+
+        // Make elements draggable
+        document.querySelectorAll('.window').forEach(el => {
+            el.onmousedown = function(event) {
+                let shiftX = event.clientX - el.getBoundingClientRect().left;
+                let shiftY = event.clientY - el.getBoundingClientRect().top;
+
+                function moveAt(pageX, pageY) {
+                    el.style.left = pageX - shiftX + 'px';
+                    el.style.top = pageY - shiftY + 'px';
+                }
+
+                function onMouseMove(event) {
+                    moveAt(event.pageX, event.pageY);
+                }
+
+                document.addEventListener('mousemove', onMouseMove);
+
+                el.onmouseup = function() {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    el.onmouseup = null;
+                };
+
+            };
+
+            el.ondragstart = function() {
+                return false;
+            };
+        });
+        
+        //Makes taskbar icons depress
+        document.querySelectorAll('.task-icons img').forEach(icon => {
+            icon.addEventListener('click', function() {
+                this.classList.toggle('active');
+            });
+        });
+
+        //Bring the tab to the front and highlight the title blue
+        document.querySelectorAll('.window').forEach(window => {
+            window.addEventListener('click', function() {
+                // Remove 'active' class from all title bars
+                document.querySelectorAll('.window .title-bar').forEach(tb => tb.classList.remove('active'));
+                
+                // Add 'active' class to the title bar of the clicked window
+                const titleBar = this.querySelector('.title-bar');
+                titleBar.classList.add('active');
+
+                // Bring the clicked window to the front
+                document.querySelectorAll('.window').forEach(w => w.style.zIndex = 1); // Reset z-index for all windows
+                this.style.zIndex = 100; // Bring this window to the front
+            });
+        });
+
+    </script>
+</body>
+</html>
