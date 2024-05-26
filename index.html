@@ -10,64 +10,62 @@
     <style>
         body {
             font-family: 'VT323', monospace;
-            background: #008080; /* Retro blue background */
-            color: #000; /* White text for retro feel */
-            font-size: 20px; /* Smaller font size for retro effect */
-            overflow: hidden; /* No scroll */
+            background: #008080;
+            color: #000;
+            font-size: 20px;
+            overflow: hidden;
         }
 
         /* General window styles */
         .window {
-            background: #FFFFFF; /* Default background */
-            border: 3px solid #808080; /* Darker gray border as seen in image */
+            background: #FFFFFF;
+            border: 3px solid #808080;
             padding: 8px;
-            width: 700px; /* Adjust width to better fit content */
+            width: 700px;
             position: absolute;
             display: flex;
             flex-direction: column;
             gap: 10px;
             cursor: grab;
-            z-index: 1; /* Ensure proper layering */
-            top: 100px; /* Start somewhat from top for clear visibility */
-            left: 100px; /* Center alignment */
-            overflow: hidden; /* Hide overflow */
+            z-index: 1;
+            top: 100px;
+            left: 100px;
+            overflow: hidden;
         }
 
-        /* Mimic classic window title bar */
         .title-bar {
-            background: #c0c0c0; /* Light grey background */
-            color: black; /* Text color for title bar */
+            background: #c0c0c0;
+            color: black;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 5px 10px; /* Slightly larger padding */
-            font-weight: bold; /* Bold text for emphasis */
+            padding: 5px 10px;
+            font-weight: bold;
         }
 
         .title-bar.active {
-            background: #0000FF; /* Blue background for active title bar */
-            color: white; /* White text for better contrast */
+            background: #0000FF;
+            color: white;
         }
 
 
         .window-menu {
-            display: inline-block; /* Align menu items inline */
-            margin-right: auto; /* Push other elements to the right */
+            display: inline-block;
+            margin-right: auto;
         }
 
         .window-menu span {
-            cursor: default; /* Non-clickable appearance */
-            margin-right: 10px; /* Space between menu items */
-            user-select: none; /* Prevent text selection */
+            cursor: default;
+            margin-right: 10px;
+            user-select: none;
         }
 
-        /* Content styling inside window */
         .content {
-            color: #000; /* Black text for readability */
-            font-size: 16px; /* Larger font size for better readability */
-            line-height: 1.5; /* More space between lines */
-            overflow-y: auto; /* Enable scrolling inside content */
-            max-height: 300px; /* Limit height to enforce scrolling */
+            color: #000;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-y: auto;
+            max-height: 300px;
         }
 
         /* Button to close window */
@@ -75,45 +73,27 @@
             cursor: pointer;
             border: none;
             background: none;
-            color: black; /* Visible against title bar */
-            font-weight: bold; /* Bold for visibility */
+            color: black;
+            font-weight: bold;
         }
-
-        /* Scrollbar adjustments for content area */
-        .content::-webkit-scrollbar {
-            width: 12px; /* Width of scrollbar */
-        }
-
-        .content::-webkit-scrollbar-track {
-            background: #f1f1f1; /* Light grey track */
-        }
-
-        .content::-webkit-scrollbar-thumb {
-            background: #888; /* Dark grey thumb */
-        }
-
-        .content::-webkit-scrollbar-thumb:hover {
-            background: #555; /* Darker grey on hover */
-        }
-
 
         .taskbar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 35px; /* Adjust height as needed */
-            background: #c1c1c1; /* Typically dark background for a taskbar */
+            height: 35px;
+            background: #c1c1c1;
             color: white;
             display: flex;
             align-items: center;
-            padding-left: 03px; /* Adjust this to move icons to the left */
+            padding-left: 03px;
             padding-right: 10px;
             box-sizing: border-box;
         }
 
         .start-button img, .task-icons img {
-            height: 30px; /* Ensures icons are not too large */
+            height: 30px;
             cursor: pointer;
             margin-right: 0px;
         }
@@ -128,20 +108,20 @@
         }
 
         #sidebar-icons {
-            position: fixed; /* Fixed position to always be visible */
-            top: 5px; /* Starting 20px from the top */
-            left: 5px; /* Starting 20px from the left edge */
+            position: fixed;
+            top: 5px;
+            left: 5px;
             display: flex;
-            flex-direction: column; /* Stack the icons vertically */
-            gap: 0px; /* Space between icons */
+            flex-direction: column;
+            gap: 0px;
         }
 
         #sidebar-icons img {
-            display: block; /* Ensure each icon is on a new line */
-            width: 85px; /* Reduced width for all icons */
-            height: 85px; /* Reduced height for all icons */
-            cursor: pointer; /* Cursor pointer to indicate clickable */
-            transition: transform 0.3s; /* Smooth transition for visual feedback */
+            display: block;
+            width: 85px;
+            height: 85px;
+            cursor: pointer;
+            transition: transform 0.3s
         }
 
         #sidebar-icons img:hover {
@@ -149,14 +129,14 @@
         }
 
         .task-icons img {
-            height: 30px; /* Ensures icons are not too large */
+            height: 30px;
             cursor: pointer;
-            margin-right: 0px; /* Space between icons */
-            transition: transform 0.1s ease; /* Smooth transition for feedback */
+            margin-right: 0px;
+            transition: transform 0.1s ease;
         }
 
         .task-icons img.active {
-            transform: translateY(2px); /* Keeps the icon "depressed" */
+            transform: translateY(2px);
         }
 
     </style>
@@ -267,16 +247,13 @@
         //Bring the tab to the front and highlight the title blue
         document.querySelectorAll('.window').forEach(window => {
             window.addEventListener('click', function() {
-                // Remove 'active' class from all title bars
                 document.querySelectorAll('.window .title-bar').forEach(tb => tb.classList.remove('active'));
                 
-                // Add 'active' class to the title bar of the clicked window
                 const titleBar = this.querySelector('.title-bar');
                 titleBar.classList.add('active');
-
-                // Bring the clicked window to the front
-                document.querySelectorAll('.window').forEach(w => w.style.zIndex = 1); // Reset z-index for all windows
-                this.style.zIndex = 100; // Bring this window to the front
+t
+                document.querySelectorAll('.window').forEach(w => w.style.zIndex = 1);
+                this.style.zIndex = 100;
             });
         });
 
