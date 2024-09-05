@@ -16,7 +16,6 @@
             overflow: hidden;
         }
 
-        /* General window styles */
         .window {
             background: #FFFFFF;
             border: 3px solid #808080;
@@ -68,7 +67,6 @@
             max-height: 300px;
         }
 
-        /* Button to close window */
         .close-btn {
             cursor: pointer;
             border: none;
@@ -125,7 +123,7 @@
         }
 
         #sidebar-icons img:hover {
-            transform: scale(1.1); /* Slightly enlarge icons on hover for better interaction feedback */
+            transform: scale(1.1);
         }
 
         .task-icons img {
@@ -163,6 +161,8 @@
             </div>
             <div class="content">
                 Check out my projects on GitHub!
+                <br>
+                <a href="https://github.com/uabassi/" target="_blank">My Github</a>
             </div>
         </div>
         
@@ -172,7 +172,7 @@
                 <button class="close-btn" onclick="this.parentElement.parentElement.style.display='none';">x</button>
             </div>
             <div class="content">
-                I currently am attending Virgnia Tech, with an expected graduation date of December 2024. I decided to design my
+                I currently am attending Virgnia Tech, majoring in Computer Science. With an expected graduation date of December 2024. I decided to design my
                 personal website like this because of the memories it holds. I used to play on my fathers computer as a child, playing games like:
                 pinball, minesweeper, and World of Tanks! Check out my LinkedIn to learn a bit more about me.
                 <br>
@@ -190,7 +190,7 @@
         </div>
     </div>
 
-    <div id="sidebar-icons">
+    <div id="sidebar-icons">    
         <img src="computer.png" alt="My Computer" style="cursor: pointer;" onclick="toggleDisplay('about-window')">
         <img src="projectsHome.png" alt="Projects" style="cursor: pointer;" onclick="toggleDisplay('projects-window')">
         <img src="contactHome.png" alt="Contact" style="cursor: pointer;" onclick="toggleDisplay('contact-window')">
