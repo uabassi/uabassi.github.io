@@ -3,283 +3,1252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Desktop Theme</title>
-    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <title>Umayya Abassi — Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
     <style>
-        body {
-            font-family: 'VT323', monospace;
-            background: #008080; /* Retro blue background */
-            color: #000; /* White text for retro feel */
-            font-size: 20px; /* Smaller font size for retro effect */
-            overflow: hidden; /* No scroll */
+        :root {
+            --teal: #008080;
+            --win-gray: #c0c0c0;
+            --win-dark: #808080;
+            --win-light: #ffffff;
+            --win-darker: #404040;
+            --title-active: #000080;
+            --panel-bg: #ffffff;
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        /* General window styles */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: var(--teal);
+            color: #000;
+            font-size: 20px;
+            margin: 0;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        a {
+            color: #0000cc;
+            transition: color 0.15s ease, filter 0.15s ease;
+        }
+
+        a:hover {
+            color: #0000ff;
+            filter: brightness(1.05);
+        }
+
+        /* Win95-style raised outer frame */
         .window {
-            background: #FFFFFF; /* Default background */
-            border: 3px solid #808080; /* Darker gray border as seen in image */
-            padding: 8px;
-            width: 700px; /* Adjust width to better fit content */
+            --win-pad: 3px;
+            background: var(--win-gray);
+            border: 2px solid;
+            border-color: var(--win-light) var(--win-darker) var(--win-darker) var(--win-light);
+            padding: var(--win-pad);
+            width: min(700px, calc(100vw - 24px));
+            height: min(400px, calc(100vh - 52px));
             position: absolute;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            cursor: grab;
-            z-index: 1; /* Ensure proper layering */
-            top: 100px; /* Start somewhat from top for clear visibility */
-            left: 100px; /* Center alignment */
-            overflow: hidden; /* Hide overflow */
+            gap: 0;
+            z-index: 1;
+            top: 100px;
+            left: 100px;
+            overflow: hidden;
+            box-shadow:
+                1px 1px 0 #000,
+                4px 8px 24px rgba(0, 0, 0, 0.28);
+            opacity: 0;
+            transform: scale(0.96) translateY(6px);
+            pointer-events: none;
+            transition:
+                opacity 0.22s var(--ease-out),
+                transform 0.22s var(--ease-out),
+                box-shadow 0.2s ease;
         }
 
-        /* Mimic classic window title bar */
+        .window.is-visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+
+        .window.is-dragging,
+        .window.is-resizing {
+            transition: none;
+            box-shadow:
+                1px 1px 0 #000,
+                8px 16px 36px rgba(0, 0, 0, 0.35);
+        }
+
+        .window.is-dragging {
+            cursor: grabbing;
+        }
+
+        /* Invisible hit targets on frame edges / corners (Win95-style resize) */
+        .win-resize-handle {
+            position: absolute;
+            z-index: 25;
+            touch-action: none;
+            user-select: none;
+        }
+
+        .win-resize-n {
+            top: 0;
+            left: 10px;
+            right: 10px;
+            height: 6px;
+            cursor: ns-resize;
+        }
+
+        .win-resize-s {
+            bottom: 0;
+            left: 10px;
+            right: 10px;
+            height: 8px;
+            cursor: ns-resize;
+        }
+
+        .win-resize-e {
+            top: 34px;
+            right: 0;
+            bottom: 10px;
+            width: 8px;
+            cursor: ew-resize;
+        }
+
+        .win-resize-w {
+            top: 34px;
+            left: 0;
+            bottom: 10px;
+            width: 8px;
+            cursor: ew-resize;
+        }
+
+        .win-resize-ne {
+            top: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            cursor: nesw-resize;
+        }
+
+        .win-resize-se {
+            bottom: 0;
+            right: 0;
+            width: 14px;
+            height: 14px;
+            cursor: nwse-resize;
+        }
+
+        .win-resize-sw {
+            bottom: 0;
+            left: 0;
+            width: 14px;
+            height: 14px;
+            cursor: nesw-resize;
+        }
+
+        .win-resize-nw {
+            top: 0;
+            left: 0;
+            width: 10px;
+            height: 10px;
+            cursor: nwse-resize;
+        }
+
         .title-bar {
-            background: #c0c0c0; /* Light grey background */
-            color: black; /* Text color for title bar */
+            background: var(--win-gray);
+            color: black;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 5px 10px; /* Slightly larger padding */
-            font-weight: bold; /* Bold text for emphasis */
+            padding: 4px 6px;
+            font-weight: bold;
+            font-size: 18px;
+            user-select: none;
+            cursor: grab;
+            border: 1px solid;
+            border-color: var(--win-light) var(--win-dark) var(--win-dark) var(--win-light);
+            flex-shrink: 0;
         }
 
         .title-bar.active {
-            background: #0000FF; /* Blue background for active title bar */
-            color: white; /* White text for better contrast */
+            background: linear-gradient(90deg, #0000a0, #1084d0);
+            color: white;
         }
 
-
-        .window-menu {
-            display: inline-block; /* Align menu items inline */
-            margin-right: auto; /* Push other elements to the right */
+        .title-bar.active .close-btn {
+            color: white;
         }
 
-        .window-menu span {
-            cursor: default; /* Non-clickable appearance */
-            margin-right: 10px; /* Space between menu items */
-            user-select: none; /* Prevent text selection */
+        .window-body {
+            background: var(--panel-bg);
+            border: 2px solid;
+            border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark);
+            margin-top: 2px;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Content styling inside window */
         .content {
-            color: #000; /* Black text for readability */
-            font-size: 16px; /* Larger font size for better readability */
-            line-height: 1.5; /* More space between lines */
-            overflow-y: auto; /* Enable scrolling inside content */
-            max-height: 300px; /* Limit height to enforce scrolling */
+            color: #000;
+            font-size: 18px;
+            line-height: 1.45;
+            overflow-y: auto;
+            padding: 10px 12px;
+            flex: 1;
+            min-height: 0;
         }
 
-        /* Button to close window */
         .close-btn {
             cursor: pointer;
-            border: none;
-            background: none;
-            color: black; /* Visible against title bar */
-            font-weight: bold; /* Bold for visibility */
+            border: 1px solid;
+            border-color: var(--win-light) var(--win-darker) var(--win-darker) var(--win-light);
+            background: var(--win-gray);
+            color: black;
+            font-weight: bold;
+            width: 22px;
+            height: 20px;
+            line-height: 1;
+            font-size: 14px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.1s ease, border-color 0.1s ease;
         }
 
-        /* Scrollbar adjustments for content area */
+        .close-btn:hover {
+            background: #dcdcdc;
+        }
+
+        .close-btn:active {
+            border-color: var(--win-darker) var(--win-light) var(--win-light) var(--win-darker);
+        }
+
         .content::-webkit-scrollbar {
-            width: 12px; /* Width of scrollbar */
+            width: 14px;
         }
 
         .content::-webkit-scrollbar-track {
-            background: #f1f1f1; /* Light grey track */
+            background: #f1f1f1;
         }
 
         .content::-webkit-scrollbar-thumb {
-            background: #888; /* Dark grey thumb */
+            background: linear-gradient(90deg, #c0c0c0, #a0a0a0);
+            border: 1px solid #808080;
         }
-
-        .content::-webkit-scrollbar-thumb:hover {
-            background: #555; /* Darker grey on hover */
-        }
-
 
         .taskbar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 35px; /* Adjust height as needed */
-            background: #c1c1c1; /* Typically dark background for a taskbar */
-            color: white;
+            height: 38px;
+            background: linear-gradient(180deg, #d4d4d4 0%, #c1c1c1 40%, #b8b8b8 100%);
+            color: #000;
             display: flex;
             align-items: center;
-            padding-left: 03px; /* Adjust this to move icons to the left */
-            padding-right: 10px;
+            padding: 2px 6px 2px 4px;
             box-sizing: border-box;
-        }
-
-        .start-button img, .task-icons img {
-            height: 30px; /* Ensures icons are not too large */
-            cursor: pointer;
-            margin-right: 0px;
+            border-top: 2px solid var(--win-light);
+            box-shadow: 0 -1px 0 var(--win-dark);
+            z-index: 200;
         }
 
         .task-icons {
             display: flex;
             align-items: center;
+            gap: 6px;
         }
 
-        .task {
+        /* Flat hit target; PNGs include Win95-style button art + labels */
+        .taskbar-btn {
             cursor: pointer;
+            border: none;
+            background: transparent;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 32px;
+            line-height: 0;
+            transition: filter 0.1s ease, transform 0.08s ease;
+        }
+
+        .taskbar-btn:hover {
+            filter: brightness(1.04);
+        }
+
+        .taskbar-btn:active,
+        .taskbar-btn.pressed {
+            transform: translateY(1px);
+            filter: brightness(0.94);
+        }
+
+        .taskbar-btn.is-window-open {
+            filter: brightness(0.9);
+        }
+
+        .taskbar-btn.start-button img {
+            display: block;
+            height: 30px;
+            width: auto;
+            pointer-events: none;
+        }
+
+        .taskbar-app img {
+            display: block;
+            height: 28px;
+            width: auto;
+            pointer-events: none;
         }
 
         #sidebar-icons {
-            position: fixed; /* Fixed position to always be visible */
-            top: 5px; /* Starting 20px from the top */
-            left: 5px; /* Starting 20px from the left edge */
+            position: fixed;
+            top: 8px;
+            left: 8px;
             display: flex;
-            flex-direction: column; /* Stack the icons vertically */
-            gap: 0px; /* Space between icons */
+            flex-direction: column;
+            gap: 4px;
+            z-index: 50;
+        }
+
+        #sidebar-icons .desk-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 88px;
+            padding: 4px 2px;
+            border: 1px solid transparent;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease, transform 0.18s var(--ease-out);
+        }
+
+        #sidebar-icons .desk-icon:hover {
+            background: rgba(0, 0, 128, 0.15);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        #sidebar-icons .desk-icon:active {
+            transform: scale(0.97);
         }
 
         #sidebar-icons img {
-            display: block; /* Ensure each icon is on a new line */
-            width: 85px; /* Reduced width for all icons */
-            height: 85px; /* Reduced height for all icons */
-            cursor: pointer; /* Cursor pointer to indicate clickable */
-            transition: transform 0.3s; /* Smooth transition for visual feedback */
+            display: block;
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
         }
 
-        #sidebar-icons img:hover {
-            transform: scale(1.1); /* Slightly enlarge icons on hover for better interaction feedback */
+        /* File Explorer */
+        #projects-window {
+            width: min(920px, calc(100vw - 20px));
+            height: min(520px, calc(100vh - 52px));
         }
 
-        .task-icons img {
-            height: 30px; /* Ensures icons are not too large */
+        #contact-window {
+            height: min(220px, calc(100vh - 52px));
+        }
+
+        #projects-window .content {
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .explorer-menu {
+            display: flex;
+            gap: 14px;
+            padding: 4px 8px;
+            font-size: 17px;
+            border-bottom: 1px solid var(--win-dark);
+            background: var(--win-gray);
+            flex-shrink: 0;
+        }
+
+        .explorer-menu span {
+            color: #000;
+            user-select: none;
+        }
+
+        .explorer-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 6px;
+            background: var(--win-gray);
+            border-bottom: 1px solid;
+            border-color: var(--win-light) transparent var(--win-dark) transparent;
+            flex-shrink: 0;
+        }
+
+        .explorer-toolbar .sep {
+            width: 2px;
+            height: 22px;
+            background: var(--win-dark);
+            box-shadow: 1px 0 0 var(--win-light);
+        }
+
+        .explorer-address {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 17px;
+            min-width: 0;
+        }
+
+        .explorer-address label {
+            flex-shrink: 0;
+        }
+
+        .explorer-address .field {
+            flex: 1;
+            background: #fff;
+            border: 2px solid;
+            border-color: var(--win-darker) var(--win-light) var(--win-light) var(--win-darker);
+            padding: 2px 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .explorer-split {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .explorer-tree {
+            width: 200px;
+            flex-shrink: 0;
+            background: var(--win-gray);
+            border-right: 2px solid var(--win-dark);
+            padding: 6px 4px;
+            overflow-y: auto;
+            font-size: 17px;
+        }
+
+        .tree-heading {
+            font-weight: bold;
+            margin-bottom: 6px;
+            padding-left: 2px;
+        }
+
+        .tree-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 6px;
             cursor: pointer;
-            margin-right: 0px; /* Space between icons */
-            transition: transform 0.1s ease; /* Smooth transition for feedback */
+            border: 1px solid transparent;
+            transition: background 0.12s ease, border-color 0.12s ease;
         }
 
-        .task-icons img.active {
-            transform: translateY(2px); /* Keeps the icon "depressed" */
+        .tree-item:hover {
+            background: #a6caf0;
+            border-color: #316ac5;
         }
 
+        .tree-item.is-selected {
+            background: #316ac5;
+            color: #fff;
+            border-color: #245edb;
+        }
+
+        .tree-item .ico {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23fcd755' d='M1 3h6l1 2h7v9H1z'/%3E%3Cpath fill='%23000' d='M1 2h6l1 2h7v10H1V2zm1 1v9h12V6H7.5L6.5 4H2z'/%3E%3C/svg%3E") center/contain no-repeat;
+        }
+
+        .tree-item.is-selected .ico {
+            filter: brightness(1.15);
+        }
+
+        .explorer-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            min-height: 0;
+            background: #fff;
+        }
+
+        .explorer-columns {
+            display: grid;
+            grid-template-columns: 1fr 100px 120px;
+            gap: 4px;
+            padding: 4px 8px;
+            font-weight: bold;
+            font-size: 16px;
+            border-bottom: 1px solid var(--win-dark);
+            background: var(--win-gray);
+            flex-shrink: 0;
+        }
+
+        /* Only as tall as the rows need (up to a cap); extra height goes to the detail pane */
+        .file-list {
+            flex: 0 1 auto;
+            min-height: 0;
+            max-height: 42%;
+            overflow-y: auto;
+            padding: 4px 0;
+        }
+
+        .file-row {
+            display: grid;
+            grid-template-columns: 1fr 100px 120px;
+            gap: 4px;
+            align-items: center;
+            padding: 5px 8px;
+            cursor: pointer;
+            font-size: 17px;
+            border: 1px solid transparent;
+            transition: background 0.12s ease;
+        }
+
+        .file-row:hover {
+            background: #e8f3ff;
+        }
+
+        .file-row.is-selected {
+            background: #316ac5;
+            color: #fff;
+        }
+
+        .file-row .fname {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .file-row .doc-ico {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23fff' stroke='%23000' d='M3 1h7l3 3v11H3z'/%3E%3Cpath fill='%23000' d='M9 1v4h4'/%3E%3C/svg%3E") center/contain no-repeat;
+        }
+
+        .detail-pane {
+            border-top: 2px groove var(--win-gray);
+            padding: 10px 12px;
+            flex: 1 1 0;
+            min-height: 0;
+            overflow-y: auto;
+            font-size: 17px;
+            line-height: 1.4;
+            background: #fafafa;
+            transition: opacity 0.18s ease;
+        }
+
+        .detail-pane h3 {
+            margin: 0 0 6px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .detail-meta {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .detail-stack {
+            font-style: italic;
+            margin-bottom: 10px;
+            color: #222;
+        }
+
+        .detail-bullets {
+            margin: 0;
+            padding-left: 1.2em;
+        }
+
+        .detail-bullets li {
+            margin-bottom: 4px;
+        }
+
+        .detail-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            font-family: inherit;
+            font-size: 17px;
+            text-decoration: none;
+            color: #000;
+            background: var(--win-gray);
+            border: 2px solid;
+            border-color: var(--win-light) var(--win-darker) var(--win-darker) var(--win-light);
+            cursor: pointer;
+            transition: background 0.1s ease;
+        }
+
+        .btn-link:hover {
+            background: #dcdcdc;
+        }
+
+        .btn-link:active {
+            border-color: var(--win-darker) var(--win-light) var(--win-light) var(--win-darker);
+        }
+
+        .detail-links span.btn-link {
+            opacity: 0.72;
+            cursor: default;
+        }
+
+        .screenshots {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .screenshots figure {
+            margin: 0;
+            max-width: 100%;
+        }
+
+        .screenshots img {
+            max-width: 280px;
+            width: 100%;
+            height: auto;
+            border: 2px solid;
+            border-color: var(--win-dark) var(--win-light) var(--win-light) var(--win-dark);
+            display: block;
+        }
+
+        .shot-placeholder {
+            width: 220px;
+            min-height: 120px;
+            border: 2px dashed var(--win-dark);
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8px;
+            color: #444;
+            font-size: 16px;
+        }
+
+        .resume-section-title {
+            font-weight: bold;
+            margin-top: 10px;
+            margin-bottom: 4px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .window,
+            .window.is-visible,
+            .window.is-resizing,
+            #sidebar-icons .desk-icon,
+            a,
+            .detail-pane {
+                transition: none !important;
+            }
+
+            .window.is-visible {
+                transform: none;
+            }
+
+            .window {
+                transform: none;
+            }
+        }
     </style>
-
-
 </head>
 <body>
     <div id="desktop">
-
-        <div class="window" id="contact-window" style="top: 300px; left: 540px;">
+        <div class="window" id="contact-window" style="top: 280px; left: 520px;">
             <div class="title-bar">
                 <span>Contact</span>
-                <button class="close-btn" onclick="this.parentElement.parentElement.style.display='none';">x</button>
+                <button type="button" class="close-btn" aria-label="Close">×</button>
             </div>
-            <div class="content">
-                Email me at: umayya@vt.edu
-            </div>
-        </div>
-        
-        <div class="window" id="projects-window" style="top: 350px; left: 590px;">
-            <div class="title-bar">
-                <span>Projects</span>
-                <button class="close-btn" onclick="this.parentElement.parentElement.style.display='none';">x</button>
-            </div>
-            <div class="content">
-                Check out my projects on GitHub!
-            </div>
-        </div>
-        
-        <div class="window" id="about-window" style="top: 400px; left: 640px;">
-            <div class="title-bar">
-                <span>Umayya</span>
-                <button class="close-btn" onclick="this.parentElement.parentElement.style.display='none';">x</button>
-            </div>
-            <div class="content">
-                I currently am attending Virgnia Tech, with an expected graduation date of December 2024. I decided to design my
-                personal website like this because of the memories it holds. I used to play on my grandfathers computer as a child, playing games like:
-                pinball, minesweeper, and World of Tanks! Check out my LinkedIn to learn a bit more about me.
-                <br>
-                <a href="https://www.linkedin.com/in/umayyaabassi/" target="_blank">My LinkedIn</a>
+            <div class="window-body">
+                <div class="content">
+                    Email me at: <a href="mailto:umayya@vt.edu">umayya@vt.edu</a>
+                </div>
             </div>
         </div>
 
+        <div class="window" id="projects-window" style="top: 120px; left: 200px;">
+            <div class="title-bar">
+                <span>Personal Projects</span>
+                <button type="button" class="close-btn" aria-label="Close">×</button>
+            </div>
+            <div class="window-body">
+                <div class="content">
+                    <div class="explorer-menu">
+                        <span>File</span><span>Edit</span><span>View</span><span>Help</span>
+                    </div>
+                    <div class="explorer-toolbar">
+                        <div class="sep" aria-hidden="true"></div>
+                        <div class="explorer-address">
+                            <label>Address</label>
+                            <div class="field" id="explorer-path">C:\Personal Projects\</div>
+                        </div>
+                    </div>
+                    <div class="explorer-split">
+                        <aside class="explorer-tree" aria-label="Folders">
+                            <div class="tree-heading">C:\</div>
+                            <div class="tree-item is-selected" data-folder="projects" role="treeitem">
+                                <span class="ico" aria-hidden="true"></span>
+                                <span>Personal Projects</span>
+                            </div>
+                            <div class="tree-item" data-folder="experience" role="treeitem">
+                                <span class="ico" aria-hidden="true"></span>
+                                <span>Experience</span>
+                            </div>
+                        </aside>
+                        <div class="explorer-main">
+                            <div class="explorer-columns">
+                                <span>Name</span>
+                                <span>Type</span>
+                                <span>Modified</span>
+                            </div>
+                            <div class="file-list" id="file-list" role="listbox" aria-label="Project files"></div>
+                            <div class="detail-pane" id="project-detail">
+                                <h3 id="detail-title">Select an item</h3>
+                                <p class="detail-meta">Choose a folder on the left, then click a file for details.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="window is-visible" id="about-window" style="top: 360px; left: 560px;">
+            <div class="title-bar active">
+                <span>Umayya</span>
+                <button type="button" class="close-btn" aria-label="Close">×</button>
+            </div>
+            <div class="window-body">
+                <div class="content">
+                    <p>
+                        I am a Computer Science graduate student at Virginia Tech (M.Eng., expected December 2026) with a B.S. in Computer Science (August 2022 – December 2024).
+                         I built this site in a Windows 95 style because, although I never used it, it's style reminds me of learning on family PCs — games like Pinball, Minesweeper, and plenty of tinkering in between. With the futuristic aesthetic that modern web design has become, I wanted
+                         to create a personal webcsite that is both nostalgic and simple.
+                    </p>
+                    <p class="resume-section-title">Education</p>
+                    <p>
+                        Virginia Tech, College of Engineering — M.Eng. in Computer Science, expected December 2026.<br>
+                        B.S. in Computer Science, August 2022 – December 2024.
+                    </p>
+                    <p>
+                        <span class="resume-section-title">Coursework:</span>
+                        Data Structures and Algorithms, Cloud Software Design, Database Management Systems, Software Engineering Capstone, Machine Learning, Information Security, Web Development, AI for Software Engineers.
+                    </p>
+                    <p>
+                        
+                    </p>
+                    <p>
+                        <a href="https://www.linkedin.com/in/umayyaabassi/" target="_blank" rel="noopener noreferrer">My LinkedIn</a>
+                        &nbsp;·&nbsp;
+                        <a href="https://github.com/uabassi" target="_blank" rel="noopener noreferrer">My GitHub</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="taskbar">
         <div class="task-icons">
-            <img src="start.png" alt="Start" onclick="toggleDisplay('about-window')">
-            <img src="contact.png" alt="Contact" onclick="toggleDisplay('contact-window')">
-            <img src="Projects.png" alt="Projects" onclick="toggleDisplay('projects-window')">
+            <button type="button" class="taskbar-btn start-button is-window-open" aria-label="Start">
+                <img src="start.png" alt="" width="54" height="30">
+            </button>
+            <button type="button" class="taskbar-btn taskbar-app" data-window="projects-window" title="Projects" aria-label="Projects">
+                <img src="Projects.png" alt="">
+            </button>
+            <button type="button" class="taskbar-btn taskbar-app" data-window="contact-window" title="Contact" aria-label="Contact">
+                <img src="contact.png" alt="">
+            </button>
         </div>
     </div>
 
     <div id="sidebar-icons">
-        <img src="computer.png" alt="My Computer" style="cursor: pointer;" onclick="toggleDisplay('about-window')">
-        <img src="projectsHome.png" alt="Projects" style="cursor: pointer;" onclick="toggleDisplay('projects-window')">
-        <img src="contactHome.png" alt="Contact" style="cursor: pointer;" onclick="toggleDisplay('contact-window')">
+        <div class="desk-icon" data-window="about-window">
+            <img src="computer.png" alt="My Computer — open about">
+        </div>
+        <div class="desk-icon" data-window="projects-window">
+            <img src="projectsHome.png" alt="Projects — open portfolio projects">
+        </div>
+        <div class="desk-icon" data-window="contact-window">
+            <img src="contactHome.png" alt="Contact — open contact">
+        </div>
     </div>
-    
-    
+
     <script>
-        // Function to toggle display of windows
-        function toggleDisplay(id) {
-            var element = document.getElementById(id);
-            if (element.style.display === 'none') {
-                element.style.display = 'block';
+        const projects = [
+            {
+                id: 'stock-journal',
+                fileName: 'Stock Trading Journal.html',
+                type: 'Web Project',
+                modified: 'Mar 2026',
+                title: 'Stock Trading Journal',
+                dateRange: 'January 2026 – March 2026',
+                stack: 'React, TypeScript, Tailwind CSS, Node.js, Express, Prisma, SQLite, REST',
+                bullets: [
+                    'Built a full-stack trading journal that ingests Webull CSV order history, reconstructs completed trades with FIFO matching, and visualizes performance in an interactive analytics dashboard.',
+                    'Engineered a trade-processing pipeline that turns raw orders into structured trades for metrics such as win rate, net P&L, and equity curves — replacing manual tracking.',
+                    'Designed analytics with real-time filtering, equity curve visualization, and daily P&L calendar views to speed up trading decisions.'
+                ],
+                screenshots: [
+                    /* Add PNGs under assets/screenshots/ — first existing path is shown */
+                    'assets/screenshots/stock-journal-1.png',
+                    'assets/screenshots/stock-journal-2.png'
+                ],
+                liveUrl: '',
+                repoUrl: ''
+            },
+            {
+                id: 'rsvp',
+                fileName: 'RSVP Management System.html',
+                type: 'Web Project',
+                modified: 'Jun 2025',
+                title: 'RSVP Management System',
+                dateRange: 'January 2025 – June 2025',
+                stack: 'React, Node.js, PostgreSQL, Express, RESTful APIs',
+                bullets: [
+                    'Developed a full-stack RSVP system managing 850+ attendees across four events with live synchronization and a large reduction in admin overhead.',
+                    'Built family-based guest management with automated attendance tracking, accurate headcounts, and no double bookings.',
+                    'Implemented secure admin tools with role-based auth and five-second refresh cycles for near-real-time guest lists.'
+                ],
+                screenshots: [
+                    'assets/screenshots/rsvp-1.png',
+                    'assets/screenshots/rsvp-2.png'
+                ],
+                liveUrl: '',
+                repoUrl: ''
+            },
+            {
+                id: 'recipe-search',
+                fileName: 'Ingredient Recipe Search.html',
+                type: 'Web Project',
+                modified: 'Dec 2024',
+                title: 'Ingredient-Based Recipe Search',
+                dateRange: 'August 2024 – December 2024',
+                stack: 'React, HTML, CSS, MySQL, MongoDB',
+                bullets: [
+                    'Implemented search with React and REST APIs so users can find recipes via multi-keyword ingredient lookup.',
+                    'Added advanced keyword search for ingredient-based discovery, improving lookup efficiency.'
+                ],
+                screenshots: [
+                    'assets/screenshots/recipe-search-1.png'
+                ],
+                liveUrl: '',
+                repoUrl: ''
+            }
+        ];
+
+        const experienceEntries = [
+            {
+                id: 'identity-intern',
+                fileName: 'Identity Consulting — Internship.txt',
+                type: 'Work Experience',
+                modified: 'Aug 2025',
+                title: 'Software Developer Intern',
+                companyLine: 'Identity Consulting — Ashburn, VA',
+                dateRange: 'June 2025 – August 2025',
+                stack: 'JavaScript, React, Node.js, REST APIs, Agile / Jira',
+                bullets: [
+                    'Developed a full-stack web application to simulate real-world scenarios for secure communication and data management using React on the front end and Node.js for back-end services.',
+                    'Collaborated in an Agile environment using Jira for issue tracking, including sprint planning, daily stand-ups, and bi-weekly retrospectives.',
+                    'Designed and implemented RESTful APIs connecting the front end and back end, improving data retrieval performance by about 25%.'
+                ],
+                screenshots: [],
+                kind: 'experience'
+            }
+        ];
+
+        let explorerFolder = 'projects';
+
+        function escapeHtml(s) {
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+
+        function getExplorerItems() {
+            return explorerFolder === 'projects' ? projects : experienceEntries;
+        }
+
+        function setExplorerPathSuffix(fileName) {
+            const pathEl = document.getElementById('explorer-path');
+            if (explorerFolder === 'experience') {
+                pathEl.textContent = 'C:\\Experience\\' + fileName;
             } else {
-                element.style.display = 'none';
+                pathEl.textContent = 'C:\\Personal Projects\\' + fileName;
             }
         }
 
-        // Make elements draggable
-        document.querySelectorAll('.window').forEach(el => {
-            el.onmousedown = function(event) {
-                let shiftX = event.clientX - el.getBoundingClientRect().left;
-                let shiftY = event.clientY - el.getBoundingClientRect().top;
+        function renderFileList() {
+            const list = document.getElementById('file-list');
+            const items = getExplorerItems();
 
-                function moveAt(pageX, pageY) {
-                    el.style.left = pageX - shiftX + 'px';
-                    el.style.top = pageY - shiftY + 'px';
-                }
+            if (!items.length) {
+                list.innerHTML = '<div class="file-row" style="cursor:default"><span class="fname">(empty folder)</span><span>—</span><span>—</span></div>';
+                document.getElementById('project-detail').innerHTML =
+                    '<h3 id="detail-title">Empty</h3><p class="detail-meta">No files in this folder yet.</p>';
+                return;
+            }
 
-                function onMouseMove(event) {
-                    moveAt(event.pageX, event.pageY);
-                }
+            list.innerHTML = items.map((p, i) => `
+                <div class="file-row${i === 0 ? ' is-selected' : ''}" role="option" tabindex="0" data-id="${escapeHtml(p.id)}">
+                    <span class="fname"><span class="doc-ico" aria-hidden="true"></span>${escapeHtml(p.fileName)}</span>
+                    <span>${escapeHtml(p.type)}</span>
+                    <span>${escapeHtml(p.modified)}</span>
+                </div>
+            `).join('');
 
-                document.addEventListener('mousemove', onMouseMove);
-
-                el.onmouseup = function() {
-                    document.removeEventListener('mousemove', onMouseMove);
-                    el.onmouseup = null;
-                };
-
-            };
-
-            el.ondragstart = function() {
-                return false;
-            };
-        });
-        
-        //Makes taskbar icons depress
-        document.querySelectorAll('.task-icons img').forEach(icon => {
-            icon.addEventListener('click', function() {
-                this.classList.toggle('active');
+            list.querySelectorAll('.file-row').forEach(row => {
+                if (!row.dataset.id) return;
+                row.addEventListener('click', () => selectExplorerItem(row.dataset.id));
+                row.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectExplorerItem(row.dataset.id);
+                    }
+                });
             });
-        });
 
-        //Bring the tab to the front and highlight the title blue
-        document.querySelectorAll('.window').forEach(window => {
-            window.addEventListener('click', function() {
-                // Remove 'active' class from all title bars
-                document.querySelectorAll('.window .title-bar').forEach(tb => tb.classList.remove('active'));
-                
-                // Add 'active' class to the title bar of the clicked window
-                const titleBar = this.querySelector('.title-bar');
-                titleBar.classList.add('active');
+            selectExplorerItem(items[0].id);
+        }
 
-                // Bring the clicked window to the front
-                document.querySelectorAll('.window').forEach(w => w.style.zIndex = 1); // Reset z-index for all windows
-                this.style.zIndex = 100; // Bring this window to the front
+        function selectExplorerFolder(folder) {
+            explorerFolder = folder;
+            document.querySelectorAll('.explorer-tree .tree-item[data-folder]').forEach(el => {
+                el.classList.toggle('is-selected', el.dataset.folder === folder);
             });
-        });
+            if (folder === 'experience') {
+                document.getElementById('explorer-path').textContent = 'C:\\Experience\\';
+            } else {
+                document.getElementById('explorer-path').textContent = 'C:\\Personal Projects\\';
+            }
+            renderFileList();
+        }
 
+        function wireExplorerTree() {
+            document.querySelectorAll('.explorer-tree .tree-item[data-folder]').forEach(el => {
+                el.addEventListener('click', () => selectExplorerFolder(el.dataset.folder));
+            });
+        }
+
+        function renderDetail(p) {
+            const el = document.getElementById('project-detail');
+            const bullets = p.bullets.map(b => `<li>${escapeHtml(b)}</li>`).join('');
+            const isExperience = p.kind === 'experience';
+
+            const metaExtra = p.companyLine
+                ? `<div class="detail-meta" style="margin-top:4px">${escapeHtml(p.companyLine)}</div>`
+                : '';
+
+            const live = typeof p.liveUrl === 'string' && /^https?:\/\//i.test(p.liveUrl.trim());
+            const repo = typeof p.repoUrl === 'string' && /^https?:\/\//i.test(p.repoUrl.trim());
+
+            const onImgErr = "this.replaceWith(Object.assign(document.createElement('div'),{className:'shot-placeholder',textContent:'Missing: ' + this.getAttribute('data-path')}))";
+
+            const shots = (p.screenshots || []).map(src => `
+                <figure>
+                    <img src="${escapeHtml(src)}" data-path="${escapeHtml(src)}" alt="Screenshot for ${escapeHtml(p.title)}" loading="lazy" onerror="${onImgErr}">
+                </figure>
+            `).join('');
+
+            const hasShots = (p.screenshots || []).length > 0;
+            const shotsBlock = !hasShots
+                ? (isExperience ? '' : '<div class="shot-placeholder">Add image paths to the <code>screenshots</code> array for this project.</div>')
+                : (shots || '<div class="shot-placeholder">Add image paths to the <code>screenshots</code> array for this project.</div>');
+
+            let linksBlock = '';
+            if (!isExperience) {
+                const liveBtn = live
+                    ? `<a class="btn-link" href="${escapeHtml(p.liveUrl.trim())}" target="_blank" rel="noopener noreferrer">Live site</a>`
+                    : '<span class="btn-link" aria-disabled="true">Live site — add <code>liveUrl</code> in index.html</span>';
+                const repoBtn = repo
+                    ? `<a class="btn-link" href="${escapeHtml(p.repoUrl.trim())}" target="_blank" rel="noopener noreferrer">Source / GitHub</a>`
+                    : '<span class="btn-link" aria-disabled="true">GitHub — add <code>repoUrl</code> in index.html</span>';
+                linksBlock = `<div class="detail-links">${liveBtn}${repoBtn}</div>`;
+            }
+
+            const stackLabel = isExperience ? 'Tools & environment' : '';
+
+            el.innerHTML = `
+                <h3 id="detail-title">${escapeHtml(p.title)}</h3>
+                <div class="detail-meta">${escapeHtml(p.dateRange)}</div>
+                ${metaExtra}
+                ${p.stack ? `<div class="detail-stack">${stackLabel ? '<span style="font-style:normal;font-weight:bold">' + escapeHtml(stackLabel) + ': </span>' : ''}${escapeHtml(p.stack)}</div>` : ''}
+                <ul class="detail-bullets">${bullets}</ul>
+                ${shotsBlock ? `<div class="screenshots" id="detail-screenshots">${shotsBlock}</div>` : ''}
+                ${linksBlock}
+            `;
+        }
+
+        function selectExplorerItem(id) {
+            const p = getExplorerItems().find(x => x.id === id);
+            if (!p) return;
+
+            document.querySelectorAll('.file-row').forEach(r => {
+                if (!r.dataset.id) return;
+                r.classList.toggle('is-selected', r.dataset.id === id);
+            });
+            setExplorerPathSuffix(p.fileName);
+            renderDetail(p);
+        }
+
+        function setWindowVisibility(id, visible) {
+            const w = document.getElementById(id);
+            if (!w) return;
+            w.classList.toggle('is-visible', visible);
+            w.style.display = visible ? 'flex' : 'none';
+
+            const task = document.querySelector(`.taskbar-app[data-window="${id}"]`);
+            if (task) task.classList.toggle('is-window-open', visible);
+            if (id === 'about-window') {
+                const startBtn = document.querySelector('.taskbar-btn.start-button');
+                if (startBtn) startBtn.classList.toggle('is-window-open', visible);
+            }
+
+            if (visible) bringToFront(w);
+        }
+
+        function bringToFront(winEl) {
+            document.querySelectorAll('.window').forEach(w => {
+                w.style.zIndex = w === winEl ? '120' : '1';
+            });
+            document.querySelectorAll('.window .title-bar').forEach(tb => tb.classList.remove('active'));
+            const tb = winEl.querySelector('.title-bar');
+            if (tb) tb.classList.add('active');
+        }
+
+        function toggleWindow(id) {
+            const w = document.getElementById(id);
+            const on = !w.classList.contains('is-visible');
+            setWindowVisibility(id, on);
+        }
+
+        function wireCloseButtons() {
+            document.querySelectorAll('.window').forEach(win => {
+                const btn = win.querySelector('.close-btn');
+                if (!btn) return;
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    setWindowVisibility(win.id, false);
+                });
+            });
+        }
+
+        function wireTaskbar() {
+            document.querySelectorAll('.taskbar-app[data-window]').forEach(task => {
+                task.addEventListener('click', () => {
+                    document.querySelectorAll('.taskbar-app[data-window]').forEach(t => t.classList.remove('pressed'));
+                    task.classList.add('pressed');
+                    toggleWindow(task.dataset.window);
+                    setTimeout(() => task.classList.remove('pressed'), 120);
+                });
+            });
+
+            document.querySelector('.taskbar-btn.start-button').addEventListener('click', () => {
+                toggleWindow('about-window');
+            });
+        }
+
+        function wireDesktopIcons() {
+            document.querySelectorAll('.desk-icon[data-window]').forEach(icon => {
+                icon.addEventListener('click', () => setWindowVisibility(icon.dataset.window, true));
+            });
+        }
+
+        function wireWindowFocus() {
+            document.querySelectorAll('.window').forEach(win => {
+                win.addEventListener('pointerdown', () => {
+                    if (win.classList.contains('is-visible')) bringToFront(win);
+                });
+            });
+        }
+
+        function wireDragging() {
+            document.querySelectorAll('.window').forEach(win => {
+                const titleBar = win.querySelector('.title-bar');
+                if (!titleBar) return;
+
+                titleBar.addEventListener('pointerdown', (e) => {
+                    if (e.target.closest('.close-btn')) return;
+                    e.preventDefault();
+                    const rect = win.getBoundingClientRect();
+                    const shiftX = e.clientX - rect.left;
+                    const shiftY = e.clientY - rect.top;
+                    win.classList.add('is-dragging');
+                    bringToFront(win);
+
+                    function moveAt(clientX, clientY) {
+                        let nx = clientX - shiftX;
+                        let ny = clientY - shiftY;
+                        const maxX = window.innerWidth - 40;
+                        const maxY = window.innerHeight - 48;
+                        nx = Math.max(0, Math.min(nx, maxX));
+                        ny = Math.max(0, Math.min(ny, maxY));
+                        win.style.left = nx + 'px';
+                        win.style.top = ny + 'px';
+                    }
+
+                    function onMove(ev) {
+                        moveAt(ev.clientX, ev.clientY);
+                    }
+
+                    function onUp() {
+                        document.removeEventListener('pointermove', onMove);
+                        document.removeEventListener('pointerup', onUp);
+                        win.classList.remove('is-dragging');
+                    }
+
+                    document.addEventListener('pointermove', onMove);
+                    document.addEventListener('pointerup', onUp);
+                });
+
+                titleBar.addEventListener('dragstart', (e) => e.preventDefault());
+            });
+        }
+
+        function wireWindowResize() {
+            const dirs = ['n', 's', 'e', 'w', 'ne', 'nw', 'se', 'sw'];
+            const minW = 260;
+            const minH = 140;
+            const bottomPad = 46;
+            const edgeMargin = 6;
+
+            document.querySelectorAll('.window').forEach(win => {
+                if (win.querySelector('.win-resize-handle')) return;
+
+                dirs.forEach(dir => {
+                    const handle = document.createElement('span');
+                    handle.className = `win-resize-handle win-resize-${dir}`;
+                    handle.setAttribute('aria-hidden', 'true');
+
+                    handle.addEventListener('pointerdown', e => {
+                        if (e.button !== 0) return;
+                        e.preventDefault();
+                        e.stopPropagation();
+                        bringToFront(win);
+
+                        const r0 = win.getBoundingClientRect();
+                        const startX = e.clientX;
+                        const startY = e.clientY;
+
+                        win.classList.add('is-resizing');
+
+                        function applyMove(clientX, clientY) {
+                            const dx = clientX - startX;
+                            const dy = clientY - startY;
+                            let width = r0.width;
+                            let height = r0.height;
+
+                            if (dir.includes('e')) width = r0.width + dx;
+                            if (dir.includes('w')) width = r0.width - dx;
+                            if (dir.includes('s')) height = r0.height + dy;
+                            if (dir.includes('n')) height = r0.height - dy;
+
+                            const maxW = window.innerWidth - edgeMargin;
+                            const maxH = window.innerHeight - bottomPad;
+                            width = Math.max(minW, Math.min(maxW, width));
+                            height = Math.max(minH, Math.min(maxH, height));
+
+                            const right = r0.left + r0.width;
+                            const bottom = r0.top + r0.height;
+                            let left = r0.left;
+                            let top = r0.top;
+
+                            if (dir === 'e') {
+                                left = r0.left;
+                                top = r0.top;
+                            } else if (dir === 'w') {
+                                left = right - width;
+                                top = r0.top;
+                            } else if (dir === 'n') {
+                                left = r0.left;
+                                top = bottom - height;
+                            } else if (dir === 's') {
+                                left = r0.left;
+                                top = r0.top;
+                            } else if (dir === 'ne') {
+                                left = r0.left;
+                                top = bottom - height;
+                            } else if (dir === 'nw') {
+                                left = right - width;
+                                top = bottom - height;
+                            } else if (dir === 'se') {
+                                left = r0.left;
+                                top = r0.top;
+                            } else if (dir === 'sw') {
+                                left = right - width;
+                                top = r0.top;
+                            }
+
+                            if (left + width > window.innerWidth - edgeMargin) {
+                                left = window.innerWidth - edgeMargin - width;
+                            }
+                            if (top + height > window.innerHeight - bottomPad) {
+                                top = window.innerHeight - bottomPad - height;
+                            }
+                            if (left < edgeMargin) left = edgeMargin;
+                            if (top < edgeMargin) top = edgeMargin;
+
+                            win.style.width = `${Math.round(width)}px`;
+                            win.style.height = `${Math.round(height)}px`;
+                            win.style.left = `${Math.round(left)}px`;
+                            win.style.top = `${Math.round(top)}px`;
+                        }
+
+                        function onMove(ev) {
+                            applyMove(ev.clientX, ev.clientY);
+                        }
+
+                        function onUp() {
+                            document.removeEventListener('pointermove', onMove);
+                            document.removeEventListener('pointerup', onUp);
+                            document.removeEventListener('pointercancel', onUp);
+                            win.classList.remove('is-resizing');
+                        }
+
+                        document.addEventListener('pointermove', onMove);
+                        document.addEventListener('pointerup', onUp);
+                        document.addEventListener('pointercancel', onUp);
+                    });
+
+                    win.appendChild(handle);
+                });
+            });
+        }
+
+        wireExplorerTree();
+        renderFileList();
+        wireCloseButtons();
+        wireTaskbar();
+        wireDesktopIcons();
+        wireWindowFocus();
+        wireDragging();
+        wireWindowResize();
+
+        document.getElementById('contact-window').style.display = 'none';
+        document.getElementById('projects-window').style.display = 'none';
     </script>
 </body>
 </html>
